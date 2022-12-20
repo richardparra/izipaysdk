@@ -5,20 +5,20 @@ Se incluyen algunos datos básicos para inicializar una transacción.
 
 ## Ejecutando el ejemplo
 
-1. Build the application
+1. Crear la aplicación
 
 ~~~
 npm install
 ~~~
 
-2. Run the application
+2. Ejecutar la aplicación
 
 ~~~
 npm run server
-open index.html with live-server
+abrir index.html con live-server o el servidor de su preferencia
 ~~~
 
-3. Go to [http://127.0.0.1:5500/public/index.html](http://127.0.0.1:5500/public/index.html)
+3. Ir a: [http://127.0.0.1:5500/public/index.html](http://127.0.0.1:5500/public/index.html)
 
 #### En caso de error en el archivo server.js verificar que los puertos configurados sean los mismos que proporciona el live-server
 
