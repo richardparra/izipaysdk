@@ -1,6 +1,6 @@
-# Aceptar un pago
+# Procesar un pago con izipay Checkout
 
-Cree un formulario de pago simple para recopilar detalles de pago. 
+Cree un formulario de pago simple y seguro para recopilar detalles de pago. 
 Se incluyen algunos datos básicos para inicializar una transacción.
 
 ## Ejecutando el ejemplo
