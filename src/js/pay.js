@@ -71,7 +71,7 @@ GetTokenSession(TRANSACTION_ID, {
                     documentType: 'DNI',
                 },
                 render: {
-                    typeForm: 'embedded',
+                    typeForm: 'pop-up',
                     container: '#your-iframe-payment',
                 },
                 urlRedirect:'https://server.punto-web.com/comercio/creceivedemo.asp?p=h1',
