@@ -1,5 +1,5 @@
 {
-  "name": "izipay-examples/checkout",
+  "name": "@izipay/examples-checkout",
   "version": "1.0.0",
   "description": "Project sample code for load checkout from izipay js",
   "scripts": {

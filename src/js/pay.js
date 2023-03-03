@@ -1,9 +1,8 @@
-
-import { GetTokenSession } from "./getTokenSession.js";
-import { getDataOrderDynamic } from "./util.js";
+import {GetTokenSession} from './getTokenSession.js';
+import {getDataOrderDynamic} from './util.js';
 
 /************** función de apoyo para simular el order y transactionId de manera dinámica **************/
-const { transactionId, orderNumber } = getDataOrderDynamic();
+const {transactionId, orderNumber} = getDataOrderDynamic();
 
 /* Inicio datos del comercio */
 const MERCHANT_CODE = '4001834';
@@ -17,10 +16,10 @@ const ORDER_AMOUNT = '1.99';
 const ORDER_CURRENCY = 'PEN';
 /************* Fin datos de la transacción **************/
 
-/******************************************************** 
-- Obteniendo el código de /autorización o token de sessión/ para inicializar el formulario de pago
-- El comercio debe llamar a su backend con sus datos para poder generar el token
-*********************************************************/
+/********************************************************
+ - Obteniendo el código de /autorización o token de sessión/ para inicializar el formulario de pago
+ - El comercio debe llamar a su backend con sus datos para poder generar el token
+ *********************************************************/
 GetTokenSession(TRANSACTION_ID, {
     requestSource: 'ECOMMERCE',
     merchantCode: MERCHANT_CODE,
@@ -30,7 +29,7 @@ GetTokenSession(TRANSACTION_ID, {
 }).then(authorization => {
 
     /********* Obteniendo el token de la respuesta  **********/
-    const { response: { token = undefined } } = authorization;
+    const {response: {token = undefined}} = authorization;
 
     if (!!token) {
 
@@ -45,71 +44,44 @@ GetTokenSession(TRANSACTION_ID, {
             publicKey: PUBLIC_KEY,
             config: {
                 transactionId: TRANSACTION_ID,
-                action: "pay",
+                action: 'pay',
                 merchantCode: MERCHANT_CODE,
-                facilitatorCode: "",
                 order: {
                     orderNumber: ORDER_NUMBER,
-                    showAmount: true,
                     currency: ORDER_CURRENCY,
                     amount: ORDER_AMOUNT,
-                    installments: "",
-                    deferred: "",
-                    payMethod: "all",
-                    channel: "",
-                    processType: "AT",
-                    merchantBuyerId: "mc1768",
-                    dateTimeTransaction: "1670258741603000", //currentTimeUnix
+                    processType: 'AT',
+                    merchantBuyerId: 'mc1768',
+                    dateTimeTransaction: '1670258741603000', //currentTimeUnix
                 },
                 card: {
-                    brand: "",
-                    pan: "",
-                    expirationMonth: "",
-                    expirationYear: "",
-                    cvc: "",
+                    brand: '',
                 },
                 billing: {
-                    firstName: "Darwin",
-                    lastName: "Paniagua",
-                    email: "demo@izipay.pe",
-                    phoneNumber: "989339999",
-                    street: "calle el demo",
-                    city: "lima",
-                    state: "lima",
-                    country: "PE",
-                    postalCode: "00001",
-                    document: "12345678",
-                    documentType: "DNI",
-                },
-                shipping: {
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    phoneNumber: "",
-                    street: "",
-                    city: "",
-                    state: "",
-                    country: "",
-                    postalCode: "",
-                    document: "",
-                    documentType: "",
+                    firstName: 'Darwin',
+                    lastName: 'Paniagua',
+                    email: 'demo@izipay.pe',
+                    phoneNumber: '989339999',
+                    street: 'calle el demo',
+                    city: 'lima',
+                    state: 'lima',
+                    country: 'PE',
+                    postalCode: '00001',
+                    document: '12345678',
+                    documentType: 'DNI',
                 },
                 render: {
-                    typeForm: "pop-up",
-                    container: "#your-iframe-payment",
+                    typeForm: 'embedded',
+                    container: '#your-iframe-payment',
                 },
-                urlRedirect:
-                    "https://server.punto-web.com/comercio/creceivedemo.asp?p=h1",
-                urlIPN: "",
+                urlRedirect:'https://server.punto-web.com/comercio/creceivedemo.asp?p=h1',
                 appearance: {
-                    styleInput: "normal",
-                    logo: "https://demo-izipay.azureedge.net/test/img/millasb.svg",
-                    theme: "green",
+                    logo: 'https://demo-izipay.azureedge.net/test/img/millasb.svg',
                 },
             },
         };
 
-        const callbackResponsePayment = response => document.querySelector("#payment-message").innerHTML = JSON.stringify(response, null, 2);
+        const callbackResponsePayment = response => document.querySelector('#payment-message').innerHTML = JSON.stringify(response, null, 2);
 
         const handleLoadForm = () => {
             try {
@@ -119,11 +91,11 @@ GetTokenSession(TRANSACTION_ID, {
                 });
 
                 izi &&
-                    izi.LoadForm({
-                        authorization: token,
-                        keyRSA: "RSA",
-                        callbackResponse: callbackResponsePayment,
-                    });
+                izi.LoadForm({
+                    authorization: token,
+                    keyRSA: 'RSA',
+                    callbackResponse: callbackResponsePayment,
+                });
 
             } catch (error) {
                 console.log(error.message, error.Errors, error.date);
@@ -132,7 +104,7 @@ GetTokenSession(TRANSACTION_ID, {
 
         /************** Botón para llamar al formulario *************/
 
-        document.querySelector("#btnPayNow").addEventListener("click", async (event) => {
+        document.querySelector('#btnPayNow').addEventListener('click', async (event) => {
             event.preventDefault();
             handleLoadForm();
         });

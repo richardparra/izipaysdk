@@ -8,7 +8,7 @@ const port = process.env.PORT || 4242;
 app.use(express.static('public'));
 app.use(express.json());
 
-const whitelist = ['http://localhost:5500', 'http://localhost:4242','http://127.0.0.1:5500'];
+const whitelist = ['http://localhost:5500', 'http://localhost:4242','http://127.0.0.1:5500','http://127.0.0.1:5501'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 */
 
 app.post('/token', async (req, res) => {
-    
+
     const { body, headers: { transactionid } } = req;
 
     const options = {
