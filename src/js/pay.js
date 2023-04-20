@@ -56,6 +56,7 @@ GetTokenSession(TRANSACTION_ID, {
                 },
                 card: {
                     brand: '',
+                    pan: '',
                 },
                 billing: {
                     firstName: 'Darwin',
