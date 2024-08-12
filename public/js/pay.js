@@ -1,18 +1,19 @@
-import {GetTokenSession} from './getTokenSession.js';
-import {getDataOrderDynamic} from './util.js';
+import { GetTokenSession } from './getTokenSession.js';
+import { getDataOrderDynamic } from './util.js';
 
 /************** función de apoyo para simular el order y transactionId de manera dinámica **************/
-const {transactionId, orderNumber} = getDataOrderDynamic();
+const { currentTimeUnix, transactionId, orderNumber } = getDataOrderDynamic();
 
 /* Inicio datos del comercio */
-const MERCHANT_CODE = '4004345';//4001834
+const MERCHANT_CODE = '4004353';
 const PUBLIC_KEY = 'VErethUtraQuxas57wuMuquprADrAHAb';
 /* Fin datos del comercio */
 
 /************* Inicio datos de la transacción **************/
 const TRANSACTION_ID = transactionId;
 const ORDER_NUMBER = orderNumber;
-const ORDER_AMOUNT = '346.5';
+const CURRENT_TIME_UNIX = currentTimeUnix;
+const ORDER_AMOUNT = '1.99';
 const ORDER_CURRENCY = 'PEN';
 /************* Fin datos de la transacción **************/
 
@@ -29,39 +30,40 @@ GetTokenSession(TRANSACTION_ID, {
 }).then(authorization => {
 
     /********* Obteniendo el token de la respuesta  **********/
-    const {response: {token = undefined}} = authorization;
-
+    const { response: { token = undefined, error } = { response: undefined, error: 'NODE_API' } } = authorization;
+    
     if (!!token) {
+
+        console.log('CURRENT_TIME_UNIX');
+        console.log(CURRENT_TIME_UNIX);
 
         const buttonPay = document.querySelector('#btnPayNow');
 
         buttonPay.disabled = false;
-        buttonPay.innerHTML = `Pay Now ${ORDER_CURRENCY} ${ORDER_AMOUNT}`;
+        buttonPay.innerHTML = `${ORDER_CURRENCY} ${ORDER_AMOUNT} →`;
 
         //Datos de configuración para cargar el Checkout(form) de izipay
 
+        console.log('ENUMS-->', Izipay.enums);
+
         const iziConfig = {
-            publicKey: PUBLIC_KEY,
             config: {
                 transactionId: TRANSACTION_ID,
-                action: 'pay',
+                action: Izipay.enums.payActions.PAY,
                 merchantCode: MERCHANT_CODE,
                 order: {
                     orderNumber: ORDER_NUMBER,
                     currency: ORDER_CURRENCY,
                     amount: ORDER_AMOUNT,
-                    processType: 'AT',
+                    processType: Izipay.enums.processType.AUTHORIZATION,
                     merchantBuyerId: 'mc1768',
-                    dateTimeTransaction: '1722612861', //currentTimeUnix
-                },
-                card: {
-                    brand: '',
-                    pan: '',
+                    dateTimeTransaction: CURRENT_TIME_UNIX.toString() ,//'1670258741603000', //currentTimeUnix
+                    payMethod: Izipay.enums.showMethods.ALL, //
                 },
                 billing: {
-                    firstName: 'Darwin',
-                    lastName: 'Paniagua',
-                    email: 'demo@izipay.pe',
+                    firstName: 'Juan',
+                    lastName: 'Wick',
+                    email: 'jwick@izipay.pe',
                     phoneNumber: '989339999',
                     street: 'calle el demo',
                     city: 'lima',
@@ -69,16 +71,32 @@ GetTokenSession(TRANSACTION_ID, {
                     country: 'PE',
                     postalCode: '00001',
                     document: '12345678',
-                    documentType: 'DNI',
+                    documentType: Izipay.enums.documentType.DNI,
                 },
                 render: {
-                    typeForm: 'pop-up',
+                    typeForm: Izipay.enums.typeForm.POP_UP,
                     container: '#your-iframe-payment',
+                    showButtonProcessForm: false,
                 },
-                urlRedirect:'https://server.punto-web.com/comercio/creceivedemo.asp?p=h1',
+                urlRedirect: 'https://server.punto-web.com/comercio/creceivedemo.asp?p=h1',
                 appearance: {
-                    logo: 'https://demo-izipay.azureedge.net/test/img/millasb.svg',
+                    logo: 'https://logowik.com/content/uploads/images/shopping-cart5929.jpg',
+                    /*customize: {
+                        visibility: {
+                            hideOrderNumber: true,
+                            hideSuccessPage: false,
+                            hideErrorPage: false,
+                            hideIconCloseCheckout: true,
+                            hideLogo: true,
+                            hideMessageActivateOnlinePurchases: true,
+                            hideTestCards: true,
+                            hideShakeValidation: true,
+                        },
+                    }*/
                 },
+                /*originEntry:{
+                    originCode: ''
+                }*/
             },
         };
 
@@ -86,17 +104,14 @@ GetTokenSession(TRANSACTION_ID, {
 
         const handleLoadForm = () => {
             try {
-                const izi = new Izipay({
-                    publicKey: iziConfig?.publicKey,
-                    config: iziConfig?.config,
-                });
+                const checkout = new Izipay({ config: iziConfig?.config });
 
-                izi &&
-                izi.LoadForm({
-                    authorization: token,
-                    keyRSA: 'RSA',
-                    callbackResponse: callbackResponsePayment,
-                });
+                checkout &&
+                    checkout.LoadForm({
+                        authorization: token,
+                        keyRSA: 'RSA',
+                        callbackResponse: callbackResponsePayment,
+                    });
 
             } catch (error) {
                 console.log(error.message, error.Errors, error.date);
@@ -110,7 +125,10 @@ GetTokenSession(TRANSACTION_ID, {
             handleLoadForm();
         });
 
+        //handleLoadForm();
+
+    }else if(error) {
+        console.log('error-->', error);
     }
 
 });
-

@@ -8,7 +8,7 @@ const port = process.env.PORT || 4242;
 app.use(express.static('public'));
 app.use(express.json());
 
-const whitelist = ['http://localhost:5500', 'http://localhost:4242','http://127.0.0.1:5500','http://127.0.0.1:5501'];
+const whitelist = ['http://localhost:5500', 'http://localhost:4242', 'http://127.0.0.1:5500', 'http://127.0.0.1:5501', 'http://localhost:63342'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -32,9 +32,9 @@ app.post('/token', async (req, res) => {
     const { body, headers: { transactionid } } = req;
 
     const options = {
-        host: 'testapi-pw.izipay.pe',
+        host: 'sandbox-checkout.izipay.pe',
         port: 443,
-        path: '/security/v1/Token/Generate',
+        path: '/apidemo/v1/Token/Generate',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,15 @@ app.post('/token', async (req, res) => {
 
     const request = https.request(options, callback => {
         callback.on('data', data => {
-            res.send(JSON.parse(data));
+            if (data) {
+                console.log('<--data-->', data);
+                try{
+                    res.send(JSON.parse(data));
+                }catch(e){
+                    console.log('error en api token-->',e);
+                }
+            }
+
         });
     });
 
